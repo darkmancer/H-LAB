@@ -1,0 +1,29 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Product {
+  id           String               @id @default(uuid())
+  sku          String               @unique
+  createdAt    DateTime             @default(now())
+  updatedAt    DateTime             @updatedAt
+  translations ProductTranslation[]
+}
+
+model ProductTranslation {
+  id           String @id @default(uuid())
+  productId    String
+  languageCode String
+  name         String
+  description  String
+
+  product Product @relation(fields: [productId], references: [id])
+
+  @@index([languageCode])
+  @@index([name])
+}
